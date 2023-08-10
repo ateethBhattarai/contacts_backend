@@ -37,7 +37,32 @@ const registerUser = asyncHandler(async (req, res) => {
 //@Route POST /api/users/login
 //@access public
 const loginUser = asyncHandler(async (req, res) => {
-  res.json({ message: "login" });
+  const { email, password } = req.body;
+  if (!email || !password) {
+    res.status(400);
+    throw new Error("All fields are required!!");
+  }
+
+  const user = await User.findOne({ email });
+
+  //check if user exists and also compare password with hashed-password
+  if (user && (await bcrypt.compare(password, user.password))) {
+    const accessToken = jwt.sign(
+      {
+        user: {
+          username: user.username,
+          email: user.email,
+          id: user.id,
+        },
+      },
+      process.env.ACCESS_TOKEN_SECRET,
+      { expiresIn: "1m" }
+    );
+    res.status(200).json({ accessToken });
+  } else {
+    res.status(401);
+    throw new Error("Email or Password is invalid!!");
+  }
 });
 
 //@desc Register a User
