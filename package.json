@@ -1,8 +1,8 @@
 {
   "name": "contacts",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "This is the restful api where user can create his/her account and save their contact lists individually.",
+  "main": "server.js",
   "scripts": {
     "dev": "nodemon server.js"
   },
